@@ -1,0 +1,29 @@
+[(${practiceName})] — [(${practitionerRole})]
+
+YOUR APPOINTMENT HAS BEEN CANCELLED
+
+Hello [(${firstName})], the appointment below is no longer booked.
+Nothing further is needed from you, and you will not be charged.
+
+Reference:  [(${reference})]
+
+Date:       [(${longDate})]
+Time:       [(${time})] ([(${timezone})])
+Therapist:  [(${practitionerName})]
+Reason:     [(${concern})]
+Where:      [(${location})]
+[# th:if="${online and meetingUrl != null}"]
+Join the meeting: [(${meetingUrl})]
+[/][# th:if="${online and meetingUrl == null}"]
+This is an online consultation. The practice will contact you with
+joining details before your appointment.
+[/]
+WOULD YOU LIKE ANOTHER TIME?
+Call [(${phone})] or reply to this email, quoting your reference.
+
+--
+[(${practiceName})]
+[(${address})]
+
+You are receiving this because an appointment was booked with this
+address. It is not a marketing email.

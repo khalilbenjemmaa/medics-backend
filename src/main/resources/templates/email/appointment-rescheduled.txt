@@ -1,0 +1,32 @@
+[(${practiceName})] — [(${practitionerRole})]
+
+YOUR APPOINTMENT HAS MOVED
+
+Hello [(${firstName})], your appointment has been moved to a new time.
+The details below are the current ones — please replace anything you
+noted earlier.
+
+Reference:  [(${reference})]
+
+Date:       [(${longDate})]
+Time:       [(${time})] ([(${timezone})])
+Therapist:  [(${practitionerName})]
+Reason:     [(${concern})]
+Where:      [(${location})]
+[# th:if="${online and meetingUrl != null}"]
+Join the meeting: [(${meetingUrl})]
+[/][# th:if="${online and meetingUrl == null}"]
+This is an online consultation. The practice will contact you with
+joining details before your appointment.
+[/]
+A calendar invitation is attached.
+
+NEED TO CHANGE OR CANCEL?
+Call [(${phone})] or reply to this email, quoting your reference.
+
+--
+[(${practiceName})]
+[(${address})]
+
+You are receiving this because an appointment was booked with this
+address. It is not a marketing email.

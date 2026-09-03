@@ -315,6 +315,61 @@ may need to see. Cancelling frees the slot immediately.
 
 ---
 
+## Email
+
+Off unless `MAIL_ENABLED=true`. A half-configured mail client that
+silently drops messages is worse than none, because the practice would
+believe patients had been told.
+
+When on, booking sends a confirmation **to the address the patient
+entered**, and cancelling or rescheduling from the admin sends the
+matching notice. Each message is multipart — an HTML part styled like
+the practice and a plain-text alternative — and the confirmation carries
+an `.ics` calendar invitation.
+
+Sending is `@Async` and failures are logged rather than thrown: the
+appointment is real whether or not the email arrived, and failing a
+booking because an SMTP server was down would be untrue.
+
+### Configuring a provider
+
+```bash
+MAIL_ENABLED=true
+MAIL_HOST=smtp.gmail.com    # or Brevo, Postmark, Resend, SES…
+MAIL_PORT=587
+MAIL_USERNAME=…
+MAIL_PASSWORD=…             # Gmail: an App Password, not the account password
+MAIL_FROM=…
+MAIL_REPLY_TO=…             # the body invites a reply; not a noreply address
+```
+
+Gmail rewrites `From` to the authenticated account regardless of what is
+set, so `MAIL_FROM` should match `MAIL_USERNAME` there.
+
+**Deliverability is not a code concern.** Whether a message lands in the
+inbox or in spam depends on SPF and DKIM records on the sending domain,
+configured at your DNS provider. A placeholder domain will not deliver
+at all.
+
+### Local development
+
+Point at a capture server rather than a real provider:
+
+```bash
+mailpit --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025
+```
+
+```bash
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_AUTH=false
+MAIL_STARTTLS=false
+```
+
+Mailpit accepts everything and delivers nothing, with a web inbox at
+`http://localhost:8025`, so real addresses are never contacted during
+development.
+
 ## Testing
 
 ```bash
@@ -335,6 +390,7 @@ worth testing.
 | `AvailabilityServiceTest` | Working days, closed days, lunch gaps, blocked periods, booked slots, cancellation freeing a slot, lead time, horizon, slot length, timezone |
 | `BookingServiceTest` | Online and on-site, double booking, idempotent retry, key reuse, past dates, lead time, outside hours, unknown category, returning patients |
 | `SecurityTest` | Public endpoints open, every admin endpoint closed, forged tokens refused, login, account enumeration, error shape |
+| `EmailNotificationTest` | Sent against a real in-process SMTP server (GreenMail): headers, both MIME parts, the calendar attachment, and that an online booking with no link never claims one is coming |
 
 The concurrency test is the one to keep. It found the deadlock described
 above, and it is the difference between believing double-booking is
@@ -365,9 +421,9 @@ common/        config/
 ### Extension points
 
 - `MeetingProvider` — video meetings.
-- `NotificationService` — email. The current implementation logs that a
-  notification is due; no provider has been chosen, and wiring a fake
-  SMTP client would look like working email until someone relied on it.
+- `NotificationService` — email. Two implementations: one that logs
+  (the default) and one that sends over SMTP, selected by
+  `MAIL_ENABLED`. See **Email** below.
 - `PatientNote` — the seam for a future patient file. Deliberately
   minimal: enough that assessments and documents can be added without
   reshaping the module, but not a speculative medical-record system built

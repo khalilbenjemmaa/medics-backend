@@ -22,7 +22,8 @@ public record AppProperties(
         @NotNull Booking booking,
         @NotNull Security security,
         @NotNull Cors cors,
-        Notifications notifications) {
+        Notifications notifications,
+        Practice practice) {
 
     public record Booking(
             @Min(5) int slotDurationMinutes,
@@ -43,6 +44,17 @@ public record AppProperties(
     public record Cors(List<String> allowedOrigins) {}
 
     public record Notifications(Email email) {
-        public record Email(boolean enabled, String from) {}
+        public record Email(boolean enabled, String from, String replyTo) {}
     }
+
+    /**
+     * Practice identity as it appears in email.
+     *
+     * Duplicated from the frontend's brand config rather than fetched:
+     * an email is sent by the backend and must not depend on the site
+     * being reachable to know who it is from.
+     */
+    public record Practice(
+            String name, String practitionerName, String practitionerRole,
+            String address, String phone, String phoneHref) {}
 }

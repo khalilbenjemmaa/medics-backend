@@ -1,0 +1,162 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${subject}">Your appointment has been cancelled</title>
+  </head>
+  <!--
+    Email HTML, not web HTML. The constraints are different and older
+    than they look:
+      - tables for layout, because several clients still ignore modern
+        CSS layout entirely
+      - every style inlined, because Gmail and others strip <style>
+      - 600px, the width that survives every desktop client
+      - no external images or fonts; nothing to block or fail to load
+    It reads as the same practice as the website, without depending on
+    anything the website can do that an inbox cannot.
+  -->
+  <body style="margin:0;padding:0;background-color:#F4F2ED;">
+    <!-- Preheader: the grey line shown after the subject in most
+         inboxes. Left unstyled it would pull in whatever text came
+         first, which is usually the wrong thing. -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      <span th:text="|Reference ${reference} — ${longDate} at ${time}|">Reference</span>
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background-color:#F4F2ED;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+                 style="width:100%;max-width:600px;background-color:#FFFFFF;border-radius:14px;overflow:hidden;">
+
+            <!-- masthead -->
+            <tr>
+              <td style="background-color:#0B5D4B;padding:32px 32px 28px;">
+                <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.2;color:#FFFFFF;"
+                   th:text="${practiceName}">Reem Amiri</p>
+                <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#9BE3D8;"
+                   th:text="${practitionerRole}">Occupational Therapy Specialist</p>
+              </td>
+            </tr>
+
+            <!-- headline -->
+            <tr>
+              <td style="padding:36px 32px 8px;">
+                <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.25;font-weight:normal;color:#12241F;">
+                  Your appointment has been cancelled
+                </h1>
+                <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#4C6763;">
+                  <span th:text="|Hello ${firstName},|">Hello,</span>
+                  the appointment below is no longer booked. Nothing further is needed from
+                  you, and you will not be charged.
+                </p>
+              </td>
+            </tr>
+
+            <!-- reference -->
+            <tr>
+              <td style="padding:24px 32px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                       style="background-color:#F4F7F5;border-radius:10px;">
+                  <tr>
+                    <td style="padding:16px 20px;">
+                      <p style="margin:0 0 2px;font-family:Helvetica,Arial,sans-serif;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#5F7873;">
+                        Reference
+                      </p>
+                      <p style="margin:0;font-family:'Courier New',Courier,monospace;font-size:19px;letter-spacing:1px;color:#0B5D4B;"
+                         th:text="${reference}">OT-000000</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- details -->
+            <tr>
+              <td style="padding:24px 32px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                       style="font-family:Helvetica,Arial,sans-serif;font-size:15px;color:#12241F;">
+                  <tr>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;width:38%;color:#5F7873;font-size:13px;">
+                      Date
+                    </td>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;" th:text="${longDate}">
+                      Thursday 3 September 2026
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;color:#5F7873;font-size:13px;">
+                      Time
+                    </td>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;"
+                        th:text="|${time} (${timezone})|">09:00 (Europe/Paris)</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;color:#5F7873;font-size:13px;">
+                      Therapist
+                    </td>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;"
+                        th:text="${practitionerName}">Reem Amiri</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;color:#5F7873;font-size:13px;">
+                      Reason
+                    </td>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;"
+                        th:text="${concern}">Sensory integration</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;color:#5F7873;font-size:13px;vertical-align:top;">
+                      Where
+                    </td>
+                    <td style="padding:10px 0;border-bottom:1px solid #E6E3DC;" th:text="${location}">
+                      123 Healthcare Avenue
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+
+            <!-- changes -->
+            <tr>
+              <td style="padding:28px 32px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding-top:20px;border-top:1px solid #E6E3DC;font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.7;color:#4C6763;">
+                      <strong style="color:#12241F;">Would you like another time?</strong><br />
+                      Call <a th:href="|tel:${phoneHref}|" th:text="${phone}"
+                              style="color:#0B5D4B;">+33 1 00 00 00 00</a>
+                      or reply to this email, quoting your reference.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- footer -->
+            <tr>
+              <td style="padding:28px 32px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding-top:20px;border-top:1px solid #E6E3DC;font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#5F7873;">
+                      <p style="margin:0 0 4px;" th:text="${practiceName}">Reem Amiri</p>
+                      <p style="margin:0 0 4px;" th:text="${address}">123 Healthcare Avenue</p>
+                      <p style="margin:0;">
+                        You are receiving this because an appointment was booked with this
+                        address. It is not a marketing email.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -47,6 +47,11 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: false
 
+  thymeleaf:
+    # Templates here are emails, never web pages. Disabling the view
+    # resolver keeps them off the URL space entirely.
+    enabled: false
+
   jackson:
     # Nulls are serialised explicitly rather than stripped.
     #
@@ -101,6 +106,20 @@ app:
       # believe patients had been told.
       enabled: ${MAIL_ENABLED:false}
       from: ${MAIL_FROM:noreply@reemamiri.example}
+      # Where a patient's reply actually goes. The email invites one,
+      # so this must not be a noreply address.
+      reply-to: ${MAIL_REPLY_TO:contact@reemamiri.example}
+
+  # Practice identity as it appears in email. Held here rather than
+  # read from the site, so email does not depend on the frontend being
+  # reachable to know who it is from.
+  practice:
+    name: ${PRACTICE_NAME:Reem Amiri}
+    practitioner-name: ${PRACTITIONER_NAME:Reem Amiri}
+    practitioner-role: ${PRACTITIONER_ROLE:Occupational Therapy Specialist}
+    address: ${PRACTICE_ADDRESS:123 Healthcare Avenue, 75011 Paris, France}
+    phone: ${PRACTICE_PHONE:+33 1 00 00 00 00}
+    phone-href: ${PRACTICE_PHONE_HREF:+33100000000}
 
 management:
   endpoints:

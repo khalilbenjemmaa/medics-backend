@@ -51,6 +51,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-mail</artifactId>
     </dependency>
+    <!-- Email templating only. Web view resolution is disabled in
+         application.yml; these templates are never served as pages. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
@@ -126,6 +132,24 @@
       <groupId>io.zonky.test</groupId>
       <artifactId>embedded-database-spring-test</artifactId>
       <version>${zonky.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--
+      A real SMTP server, in-process. Lets the email tests assert on
+      what was actually transmitted — headers, both MIME parts, the
+      attachment — rather than on a mock having been called. Without it
+      the mail path could only be verified by sending to a real inbox.
+    -->
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail-junit5</artifactId>
+      <version>2.1.9</version>
       <scope>test</scope>
     </dependency>
     <dependency>
