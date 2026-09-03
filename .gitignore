@@ -1,0 +1,10 @@
+target/
+*.class
+
+# Secrets. Only .env.example belongs in the repository.
+.env
+
+.idea/
+*.iml
+.vscode/
+.DS_Store

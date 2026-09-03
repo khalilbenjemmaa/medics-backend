@@ -1,0 +1,43 @@
+# The embedded-database starter replaces the DataSource, so no URL is
+# configured here. Flyway still runs, which means the tests exercise the
+# same migrations production does.
+
+zonky:
+  test:
+    database:
+      # ZONKY runs a bundled PostgreSQL binary in-process. The default
+      # provider is DOCKER, which is exactly what this setup exists to
+      # avoid needing.
+      provider: zonky
+      postgres:
+        # btree_gist is required by the appointment overlap constraint.
+        initdb-properties:
+          lc-collate: C
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+app:
+  doctor-timezone: Europe/Paris
+  booking:
+    slot-duration-minutes: 30
+    minimum-lead-time-hours: 24
+    maximum-horizon-days: 90
+  security:
+    jwt:
+      secret: test-only-signing-key-not-used-anywhere-outside-tests-0123456789
+      access-token-minutes: 30
+      issuer: practice-api
+    admin:
+      email: admin@test.local
+      password: test-admin-password
+  cors:
+    allowed-origins: http://localhost:4200
+
+logging:
+  level:
+    com.reemamiri.practice: INFO

@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: practice-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-practice}
+      POSTGRES_USER: ${POSTGRES_USER:-practice}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-practice}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - practice-db-data:/var/lib/postgresql/data
+    healthcheck:
+      # The API waits for this, so it does not start against a database
+      # that is listening but not yet accepting queries.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-practice} -d ${POSTGRES_DB:-practice}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: practice-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-practice}
+      DATABASE_USERNAME: ${POSTGRES_USER:-practice}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-practice}
+      APP_DOCTOR_TIMEZONE: ${APP_DOCTOR_TIMEZONE:-Europe/Paris}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set - see .env.example}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@reemamiri.example}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+
+volumes:
+  practice-db-data:
