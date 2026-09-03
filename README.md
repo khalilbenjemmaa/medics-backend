@@ -346,10 +346,33 @@ MAIL_REPLY_TO=…             # the body invites a reply; not a noreply address
 Gmail rewrites `From` to the authenticated account regardless of what is
 set, so `MAIL_FROM` should match `MAIL_USERNAME` there.
 
-**Deliverability is not a code concern.** Whether a message lands in the
-inbox or in spam depends on SPF and DKIM records on the sending domain,
-configured at your DNS provider. A placeholder domain will not deliver
-at all.
+### Deliverability
+
+Mostly not a code concern, and worth understanding before trying to fix
+it in the wrong place.
+
+Sending through Gmail SMTP as an authenticated user means SPF, DKIM and
+DMARC already pass — Google signs the message. Mail from a personal
+Gmail address still lands in spam regularly, and authentication is not
+why. The filter's question is whether this sender has a history of
+wanted mail, and a personal account that has never sent transactional
+email has no such history. Templated HTML with a calendar attachment,
+to a recipient who has never corresponded with the sender, fits the
+profile of something automated.
+
+The messages carry `Auto-Submitted` and `X-Auto-Response-Suppress`
+headers marking them as transactional. That helps at the margin; it
+does not manufacture reputation.
+
+The actual fix is a domain the practice owns, sent through a
+transactional provider (Brevo, Postmark, Resend), with SPF, DKIM and
+DMARC records at the DNS provider. Those services exist because
+deliverability is a reputation problem, and they maintain the
+reputation. Expect placement to improve within days of the switch, not
+instantly.
+
+A placeholder domain such as `reemamiri.example` will not deliver
+anywhere at all.
 
 ### Local development
 
